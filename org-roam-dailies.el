@@ -277,13 +277,14 @@ Prefer past dates, unless PREFER-FUTURE is non-nil."
 (defun org-roam-dailies--list-files (&rest extra-files)
   "List all files in `org-roam-dailies-directory'.
 EXTRA-FILES can be used to append extra files to the list."
-  (let ((dir (org-roam-dailies-directory--get-absolute-path)))
+  (let ((dir (org-roam-dailies-directory--get-absolute-path))
+	(regexp (rx "." (eval `(or ,@org-roam-file-extensions)))))
     (append (--remove (let ((file (file-name-nondirectory it)))
                         (when (or (auto-save-file-name-p file)
                                   (backup-file-name-p file)
                                   (string-match "^\\." file))
                           it))
-                      (directory-files-recursively dir ""))
+                      (directory-files-recursively dir regexp))
             extra-files)))
 
 (defun org-roam-dailies-find-next-note (&optional n)
